@@ -44,4 +44,14 @@ function guardarCliente() {
 
   modalBootstrap.hide();
   console.log(cliente);
+
+  mostrarSecciones();
+}
+
+function mostrarSecciones() {
+  const secciones = document.querySelectorAll('.d-none');
+
+  secciones.forEach(seccion => {
+    seccion.classList.remove('d-none');
+  })
 }
