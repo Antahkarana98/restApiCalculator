@@ -76,7 +76,7 @@ function mostrarPlatillos(result) {
   //mostrar los platillos en el html con scripting
   result.forEach(platillo => {
     const row = document.createElement('DIV');
-    row.classList.add('row');
+    row.classList.add('row', 'py-3', 'border-top');
 
     const nombre = document.createElement('DIV');
     nombre.classList.add('col-md-4');
@@ -90,9 +90,24 @@ function mostrarPlatillos(result) {
     categoria.classList.add('col-md-3');
     categoria.textContent = categorias[platillo.categoria];
 
+    const inputCantidad = document.createElement('INPUT');
+    inputCantidad.classList.add('form-control');
+    inputCantidad.type = 'number';
+    inputCantidad.min = 0;
+    inputCantidad.value = 0;
+    inputCantidad.id = `producto-${platillo.id}`;
+
+    const agregar = document.createElement('DIV');
+    agregar.classList.add('col-md-2');
+    agregar.appendChild(inputCantidad);
+
+    console.log(inputCantidad);
+
     row.appendChild(nombre);
     row.appendChild(precio);
     row.appendChild(categoria);
+    row.appendChild(agregar);
     contenido.appendChild(row);
+
   })
 }
