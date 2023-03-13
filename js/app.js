@@ -4,6 +4,12 @@ let cliente = {
   pedido: []
 }
 
+const categorias = {
+  1: 'Comida',
+  2: 'Bebida',
+  3: 'Postre'
+}
+
 const btnGuardar = document.querySelector('#guardar-cliente');
 btnGuardar.addEventListener('click', guardarCliente);
 
@@ -39,13 +45,14 @@ function guardarCliente() {
   //ocultar modal una vez se completo la validacion y el guardado de datos
 
   const modalFormulario = document.querySelector('#formulario');
-
   const modalBootstrap = bootstrap.Modal.getInstance(modalFormulario);
-
   modalBootstrap.hide();
-  console.log(cliente);
 
+  //mostrar secciones ocultas
   mostrarSecciones();
+
+  //consultar nuestra api
+  obtenerPlatillos();
 }
 
 function mostrarSecciones() {
@@ -53,5 +60,39 @@ function mostrarSecciones() {
 
   secciones.forEach(seccion => {
     seccion.classList.remove('d-none');
+  })
+}
+
+function obtenerPlatillos() {
+  const url = 'http://localhost:4000/platillos';
+
+  fetch(url)
+    .then(response => response.json())
+    .then(result => mostrarPlatillos(result))
+}
+
+function mostrarPlatillos(result) {
+  const contenido = document.querySelector('#platillos .contenido')
+  //mostrar los platillos en el html con scripting
+  result.forEach(platillo => {
+    const row = document.createElement('DIV');
+    row.classList.add('row');
+
+    const nombre = document.createElement('DIV');
+    nombre.classList.add('col-md-4');
+    nombre.textContent = platillo.nombre;
+
+    const precio = document.createElement('DIV');
+    precio.classList.add('col-md-3', 'fw-bold');
+    precio.textContent = platillo.precio;
+
+    const categoria = document.createElement('DIV');
+    categoria.classList.add('col-md-3');
+    categoria.textContent = categorias[platillo.categoria];
+
+    row.appendChild(nombre);
+    row.appendChild(precio);
+    row.appendChild(categoria);
+    contenido.appendChild(row);
   })
 }
