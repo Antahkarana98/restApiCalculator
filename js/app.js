@@ -148,4 +148,144 @@ function agregarPlatillo(producto) {
   }
 
   console.log(cliente.pedido);
+
+  limpiarHTML();
+
+  actualizarResumen();
+
+}
+
+function limpiarHTML() {
+  const contenido = document.querySelector('#resumen .contenido');
+  while(contenido.firstChild) {
+      contenido.removeChild(contenido.firstChild);
+  }
+}
+
+function actualizarResumen() {
+  const contenido = document.querySelector('#resumen .contenido');
+
+  const resumen = document.createElement('DIV');
+  resumen.classList.add('col-md-6', 'card', 'py-5', 'px-3', 'shadow');
+
+  // Mostrar la Mesa
+
+  const mesa = document.createElement('P');
+  mesa.textContent = 'Mesa: ';
+  mesa.classList.add('fw-bold');
+
+  const mesaSpan = document.createElement('SPAN');
+  mesaSpan.textContent = cliente.mesa;
+  mesaSpan.classList.add('fw-normal');
+  mesa.appendChild(mesaSpan);
+
+  // Hora
+  const hora = document.createElement('P');
+  hora.textContent = 'Hora: ';
+  hora.classList.add('fw-bold');
+
+  const horaSpan = document.createElement('SPAN');
+  horaSpan.textContent = cliente.hora;
+  horaSpan.classList.add('fw-normal');
+  hora.appendChild(horaSpan);
+
+
+  // Mostrar los platillos Consumidos!
+
+  const heading = document.createElement('H3');
+  heading.textContent = 'Platillos Pedidos';
+  heading.classList.add('my-4');
+
+
+  const grupo = document.createElement('UL');
+  grupo.classList.add('list-group');
+
+  // Producto pedido
+  const { pedido } = cliente;
+  pedido.forEach( articulo => {
+
+      const { nombre, cantidad, precio, id } = articulo;
+
+      const lista = document.createElement('LI');
+      lista.classList.add('list-group-item');
+
+      const nombreEl = document.createElement('h4');
+      nombreEl.classList.add('text-center', 'my-4');
+      nombreEl.textContent = nombre;
+
+      const cantidadEl = document.createElement('P');
+      cantidadEl.classList.add('fw-bold');
+      cantidadEl.textContent = 'Cantidad: ';
+
+      const cantidadValor = document.createElement('SPAN');
+      cantidadValor.classList.add('fw-normal');
+      cantidadValor.textContent = cantidad;
+
+      const precioEl = document.createElement('P');
+      precioEl.classList.add('fw-bold');
+      precioEl.textContent = 'Precio: ';
+
+
+      const precioValor = document.createElement('SPAN');
+      precioValor.classList.add('fw-normal');
+      precioValor.textContent = `$${precio}`;
+
+      const subtotalEl = document.createElement('P');
+      subtotalEl.classList.add('fw-bold');
+      subtotalEl.textContent = 'Subtotal: ';
+
+
+      const subtotalValor = document.createElement('SPAN');
+      subtotalValor.classList.add('fw-normal');
+      subtotalValor.textContent = calcularSubtotal(precio, cantidad);
+
+      const btnEliminar = document.createElement('BUTTON');
+      btnEliminar.classList.add('btn', 'btn-danger');
+      btnEliminar.textContent = 'Eliminar platillo';
+      btnEliminar.onclick = function() {
+        eliminarPlatillo(id);
+      }
+
+      // Agregar los Labels a sus contenedores
+      cantidadEl.appendChild(cantidadValor);
+      precioEl.appendChild(precioValor);
+      subtotalEl.appendChild(subtotalValor);
+
+
+
+      lista.appendChild(nombreEl);
+      lista.appendChild(cantidadEl);
+      lista.appendChild(precioEl);
+      lista.appendChild(subtotalEl);
+      lista.appendChild(btnEliminar);
+
+      grupo.appendChild(lista);
+
+
+  })
+
+  resumen.appendChild(mesa);
+  resumen.appendChild(hora);
+  resumen.appendChild(heading);
+  resumen.appendChild(grupo);
+
+
+  // agregar al contenido
+  contenido.appendChild(resumen)
+}
+
+function calcularSubtotal(precio, cantidad) {
+  return `$ ${precio * cantidad}`;
+}
+
+function eliminarPlatillo(id) {
+  const {pedido} = cliente;
+
+  const resultado = pedido.filter(articulo => articulo.id !== id);
+    //actualizar pedido
+  cliente.pedido = [...resultado];
+
+  limpiarHTML();
+
+  actualizarResumen();
 }
